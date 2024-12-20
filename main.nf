@@ -7,7 +7,7 @@ nextflow.enable.dsl=2
 
 log.info """\
 ===============================================================================
-Pipeline Name
+nf-Download-Sumstats
 ===============================================================================
 
 Created by the Computational Medicine Group | BIH @ Charité
@@ -40,13 +40,23 @@ def helpMessage() {
 
 // MODULES --------------------------------------------------------------------
 
-include { WORKFLOW } from './workflows/workflow.nf'
+include { DOWNLOAD_DATA } from './workflows/download_data.nf'
 
 // WORKFLOW -------------------------------------------------------------------
 
 workflow {
   
-  WORKFLOW ()
+  // Main file containing Data IDs and necessary meta data
+  def input_table = file(params.input_table)
+
+  // Where to find all R packages
+  def r_lib    = Channel.fromPath(params.local_r_library)
+
+  // Where to find additional binaries // TODO: create environments
+  def lftp_bin = Channel.fromPath(params.lftp_bin)
+  
+  // Download raw summary statistics from various sources
+  DOWNLOAD_DATA (input_table, r_lib, lftp_bin)
 
 }
 
