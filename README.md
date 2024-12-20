@@ -5,9 +5,9 @@
 This is a Nextflow Pipeline to streamline downloading of GWAS summary
 statistics to then be processed using the
 [`nf-munge-sumstats`](https://github.com/comp-med/nf-munge-sumstats) pipeline
-to format and lift them into a harmonized format
-([GWAS-VCF](https://github.com/MRCIEU/gwas-vcf-specification)) and both the
-GRCh37 and GRCh38 genome build. 
+to format into a harmonized format
+([GWAS-VCF](https://github.com/MRCIEU/gwas-vcf-specification)) and  and lift
+them into both the GRCh37 and GRCh38 genome build. 
 
 The pipeline covers the following steps:
 
