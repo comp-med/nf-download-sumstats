@@ -79,7 +79,7 @@ R packages so make sure you have the following software dependencies set up and
 configured in `nextflow.config`.
 
 * External binaries
-    * [`lftp`](https://lftp.yar.ru/)
+    * [`lftp`](https://lftp.yar.ru/) (can be installed with conda from [conda-forge](https://anaconda.org/conda-forge/lftp))
 * R packages: 
     * From GitHub: [gwascatftp](https://github.com/comp-med/gwascatftp), [MungeSumstats](https://github.com/Al-Murphy/MungeSumstats)
     * From CRAN: `data.table`, `fs`
