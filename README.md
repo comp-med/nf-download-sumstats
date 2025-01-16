@@ -17,7 +17,7 @@ The pipeline covers the following steps:
 ### Input Table
 
 The pipeline requires a single input table in `CSV` format that is to be
-specified in the `input_table` parameter in `nextflow.config`.
+specified in the `input` parameter in `nextflow.config`.
 
 Create the input table with the following columns.
 

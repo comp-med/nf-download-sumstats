@@ -1,0 +1,6 @@
+name: lftp
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - lftp
