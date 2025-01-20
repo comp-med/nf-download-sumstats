@@ -47,7 +47,7 @@ include { DOWNLOAD_DATA } from './workflows/download_data.nf'
 workflow {
   
   // Main file containing Data IDs and necessary meta data
-  def input = file(params.input_table)
+  def input = file(params.input)
 
   // Where to find all R packages
   def r_lib    = Channel.fromPath(params.local_r_library)
