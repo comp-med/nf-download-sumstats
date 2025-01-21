@@ -197,7 +197,7 @@ process DOWNLOAD_OPEN_GWAS_DATA {
 process LINK_LOCAL_DATA {
 
     cache true
-    tag "open_gwas: ${phenotype_name}"
+    tag "local: ${phenotype_name}"
     publishDir "${params.outDir}/raw/${phenotype_name}",
         mode: 'symlink',
         pattern: "raw_sumstat_file.*",
