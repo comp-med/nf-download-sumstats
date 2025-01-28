@@ -32,7 +32,7 @@ process DOWNLOAD_OTHER_DATA {
 
 process GWAS_CATALOG_SETUP {
     
-    cache true
+    cache 'lenient'
     tag 'single_execution'
     label 'rProcess'
 
@@ -69,7 +69,7 @@ process GWAS_CATALOG_SETUP {
 
 process DOWNLOAD_GWAS_CATALOG_DATA {
     
-    cache true
+    cache 'lenient'
     tag "gwas_catalog: ${phenotype_name}"
     label 'rProcess'
     publishDir "${params.outDir}/raw/${phenotype_name}",
