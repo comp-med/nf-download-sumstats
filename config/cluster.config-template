@@ -18,7 +18,7 @@ process {
   executor         = 'slurm'
   time             = 1.h
   memory           = 4.GB
-  cpus             = "$params.cpus"
+  cpus             = 8
   containerOptions = "--bind $params.apptainerBind"
 }
 
