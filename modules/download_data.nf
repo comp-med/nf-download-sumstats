@@ -1,11 +1,10 @@
 process DOWNLOAD_OTHER_DATA {
 
-    cache true
+    cache 'lenient'
     tag "other: ${phenotype_name}"
     publishDir "${params.outDir}/raw/${phenotype_name}",
         mode: 'copy',
-        pattern: "raw_sumstat_file.*",
-        overwrite: false
+        pattern: "raw_sumstat_file.*"
 
     input:
     tuple val(phenotype_name), val(download_link)
@@ -75,8 +74,7 @@ process DOWNLOAD_GWAS_CATALOG_DATA {
     label 'rProcess'
     publishDir "${params.outDir}/raw/${phenotype_name}",
         mode: 'copy',
-        pattern: "raw_sumstat_file.*",
-        overwrite: false
+        pattern: "raw_sumstat_file.*"
 
     input:
     tuple val(phenotype_name), 
@@ -168,8 +166,7 @@ process DOWNLOAD_OPEN_GWAS_DATA {
     tag "open_gwas: ${phenotype_name}"
     publishDir "${params.outDir}/raw/${phenotype_name}",
         mode: 'copy',
-        pattern: "raw_sumstat_file.*",
-        overwrite: false
+        pattern: "raw_sumstat_file.*"
 
     input:
     tuple val(phenotype_name), val(id)
@@ -201,8 +198,7 @@ process LINK_LOCAL_DATA {
     tag "local: ${phenotype_name}"
     publishDir "${params.outDir}/raw/${phenotype_name}",
         mode: 'copy',
-        pattern: "raw_sumstat_file.*",
-        overwrite: false
+        pattern: "raw_sumstat_file.*"
 
     input:
     tuple val(phenotype_name), path(local_file)
