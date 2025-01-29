@@ -82,7 +82,7 @@ configured in `nextflow.config`.
     * [`lftp`](https://lftp.yar.ru/) (can be installed with conda from [conda-forge](https://anaconda.org/conda-forge/lftp))
 * R packages: 
     * From GitHub: [gwascatftp](https://github.com/comp-med/gwascatftp), [MungeSumstats](https://github.com/Al-Murphy/MungeSumstats)
-    * From CRAN: `data.table`, `fs`
+    * From CRAN: `data.table`, `fs`, `glue`
 
 ## Gettings Started
 
