@@ -3,7 +3,7 @@ process DOWNLOAD_OTHER_DATA {
     cache true
     tag "other: ${phenotype_name}"
     publishDir "${params.outDir}/raw/${phenotype_name}",
-        mode: 'symlink',
+        mode: 'copy',
         pattern: "raw_sumstat_file.*",
         overwrite: false
 
@@ -74,7 +74,7 @@ process DOWNLOAD_GWAS_CATALOG_DATA {
     tag "gwas_catalog: ${phenotype_name}"
     label 'rProcess'
     publishDir "${params.outDir}/raw/${phenotype_name}",
-        mode: 'symlink',
+        mode: 'copy',
         pattern: "raw_sumstat_file.*",
         overwrite: false
 
@@ -167,7 +167,7 @@ process DOWNLOAD_OPEN_GWAS_DATA {
     cache true
     tag "open_gwas: ${phenotype_name}"
     publishDir "${params.outDir}/raw/${phenotype_name}",
-        mode: 'symlink',
+        mode: 'copy',
         pattern: "raw_sumstat_file.*",
         overwrite: false
 
@@ -200,7 +200,7 @@ process LINK_LOCAL_DATA {
     cache true
     tag "local: ${phenotype_name}"
     publishDir "${params.outDir}/raw/${phenotype_name}",
-        mode: 'symlink',
+        mode: 'copy',
         pattern: "raw_sumstat_file.*",
         overwrite: false
 
