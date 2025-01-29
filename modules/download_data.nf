@@ -46,7 +46,8 @@ process GWAS_CATALOG_SETUP {
     """
     #! /usr/bin/env Rscript
 
-    suppressPackageStartupMessages(library(gwascatftp, lib.loc = "$r_lib"))
+    suppressPackageStartupMessages(library("gwascatftp", lib.loc = "$r_lib"))
+    suppressPackageStartupMessages(library("glue", lib.loc = "$r_lib"))
 
     gwascat_settings <- gwascatftp::create_lftp_settings(
         lftp_bin = "./$lftp_bin", # TODO make this but in nice
