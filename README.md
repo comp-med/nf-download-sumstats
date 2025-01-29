@@ -125,16 +125,15 @@ nextflow run main.nf -profile cluster
 
 By default, all output will be saved in the `./output` directory in the
 pipeline's base directory. Raw summary statistic files can be found in the
-`./raw` subdirectory as symbolic links into the respective working directory.
-Files for each phenotype will be saved in subdirectories named after each line
-in `phenotype_id` of `params.input_table`.
+`./raw` subdirectory. Files for each phenotype will be saved in subdirectories
+named after each line in `phenotype_id` of `params.input_table`.
 
 ```bash
 output/
 └── raw
     ├── phentype_1
-    │   └── raw_sumstat_file.gz -> </SYMLINK/TO/WORK/DIR>/raw_sumstat_file.gz
+    │   └── raw_sumstat_file.gz
     ├── phenotype_2
-    │   └── raw_sumstat_file.vcf.gz -> </SYMLINK/TO/WORK/DIR>/raw_sumstat_file.vcf.gz
+    │   └── raw_sumstat_file.vcf.gz
 [...]
 ```
