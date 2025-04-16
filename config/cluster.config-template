@@ -32,4 +32,5 @@ process {
          time          = { 1.h * task.attempt }
          errorStrategy = { task.exitStatus in 137..140 ? 'retry' : 'terminate' }
          maxRetries    = 2
+    }
 }
