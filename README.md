@@ -93,7 +93,7 @@ the path to the input table in the `input_table` parameter.
 library(data.table)
 input_table <- data.table(
     phenotype_id = c("atrial_fibrillation", "body_mass_index"),
-    data_source = c("gwas_catalog", "body_mass_index"),
+    data_source = c("gwas_catalog", "open_gwas"),
     data_id = c("GCST90204201", "ieu-b-5118"),
     data_link = NA_character_,
     data_location = NA_character_
