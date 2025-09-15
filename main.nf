@@ -54,9 +54,14 @@ workflow {
 
   // Where to find additional binaries // TODO: create environments
   def lftp_bin = Channel.fromPath(params.lftp_bin)
+
+  // Proxy configuration for `gwascatftp`
+  def use_proxy = Channel.from(params.use_proxy)
+  def ftp_proxy = Channel.from(params.ftp_proxy)
+  def proxy_ch = use_proxy.combine(ftp_proxy)
   
   // Download raw summary statistics from various sources
-  DOWNLOAD_DATA (input, r_lib, lftp_bin)
+  DOWNLOAD_DATA (input, r_lib, lftp_bin, proxy_ch)
 
 }
 

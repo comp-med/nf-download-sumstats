@@ -7,13 +7,19 @@ process DOWNLOAD_OTHER_DATA {
         pattern: "raw_sumstat_file.*"
 
     input:
-    tuple val(phenotype_name), val(download_link)
+    tuple val(phenotype_name), val(download_link), val(use_proxy), val(ftp_proxy)
 
     output:
     tuple val(phenotype_name), path("raw_sumstat_file.*")
 
     script:
     """
+    if [ "$use_proxy" = "true" ]; then
+        export http_proxy="$ftp_proxy"
+        export https_proxy=\$http_proxy
+        export HTTPS_PROXY=\$http_proxy
+        export HTTP_PROXY=\$http_proxy
+    fi
     # https://stackoverflow.com/questions/965053/extract-filename-and-extension-in-bash
     download_link="$download_link"
     filename=\$(basename -- "\$download_link")
@@ -36,7 +42,7 @@ process GWAS_CATALOG_SETUP {
     label 'rProcess'
 
     input:
-    tuple path(r_lib), path(lftp_bin)
+    tuple path(r_lib), path(lftp_bin), val(use_proxy), val(ftp_proxy)
 
     output:
     tuple path("harmonized_list"), path("directory_list")
@@ -45,16 +51,22 @@ process GWAS_CATALOG_SETUP {
     """
     #! /usr/bin/env Rscript
 
-    suppressPackageStartupMessages(library("gwascatftp", lib.loc = "$r_lib"))
-    suppressPackageStartupMessages(library("glue", lib.loc = "$r_lib"))
+    r_lib <- "$r_lib"
+    lftb_bin <- "$lftp_bin"
+    use_proxy <- ifelse("$use_proxy" == "true", TRUE, FALSE)
+    ftp_proxy <- "$ftp_proxy"
+
+    suppressPackageStartupMessages(library("gwascatftp", lib.loc = r_lib))
+    suppressPackageStartupMessages(library("glue", lib.loc = r_lib))
 
     gwascat_settings <- gwascatftp::create_lftp_settings(
-        lftp_bin = "./$lftp_bin", # TODO make this but in nice
-        use_proxy = TRUE, 
-        ftp_proxy = "http://proxy.charite.de:8080" # TODO Make this not depend on charite environment!
+        lftp_bin = lftb_bin, # TODO use conda instead!
+        use_proxy = use_proxy, 
+        ftp_proxy = ftp_proxy,
+        parse_settings = TRUE
     )
-    harmonized_list <- get_harmonised_list(gwascat_settings)
-    directory_list <- get_directory_list(gwascat_settings)
+    harmonized_list <- get_harmonised_list()
+    directory_list <- get_directory_list()
     writeLines(harmonized_list, con = "harmonized_list")
     writeLines(directory_list, con = "directory_list")
     """
@@ -82,8 +94,9 @@ process DOWNLOAD_GWAS_CATALOG_DATA {
           path(harmonized_list),
           path(directory_list),
           path(r_lib),
-          path(lftp_bin)
-
+          path(lftp_bin),
+          val(use_proxy),
+          val(ftp_proxy)
     output:
     tuple val(phenotype_name), path("raw_sumstat_file.*")
 
@@ -91,9 +104,14 @@ process DOWNLOAD_GWAS_CATALOG_DATA {
     """
     #! /usr/bin/env Rscript
 
-    suppressPackageStartupMessages(library(data.table, lib.loc = "$r_lib"))
-    suppressPackageStartupMessages(library(fs, lib.loc = "$r_lib"))
-    suppressPackageStartupMessages(library(gwascatftp, lib.loc = "$r_lib"))
+    r_lib <- "$r_lib"
+    lftb_bin <- "$lftp_bin"
+    use_proxy <- ifelse("$use_proxy" == "true", TRUE, FALSE)
+    ftp_proxy <- "$ftp_proxy"
+
+    suppressPackageStartupMessages(library(data.table, lib.loc = r_lib))
+    suppressPackageStartupMessages(library(fs, lib.loc = r_lib))
+    suppressPackageStartupMessages(library(gwascatftp, lib.loc = r_lib))
 
     # load the `gwascatftp` files created in a separate job
     harmonized_list <- unlist(fread("$harmonized_list", header = FALSE))
@@ -101,13 +119,15 @@ process DOWNLOAD_GWAS_CATALOG_DATA {
     gwas_cat_id <- "$id"
 
     gwascat_settings <- gwascatftp::create_lftp_settings(
-        lftp_bin = "./$lftp_bin", # TODO make this but in nice
-        use_proxy = TRUE, 
-        ftp_proxy = "http://proxy.charite.de:8080" # TODO make Charite independent
+        lftp_bin = lftb_bin, # TODO use conda instead!
+        use_proxy = use_proxy, 
+        ftp_proxy = ftp_proxy,
+        parse_settings = TRUE
     )
 
     is_harmonized <- gwascatftp::is_available_harmonised(
-      study_accession = gwas_cat_id, harmonized_list
+      study_accession = gwas_cat_id,
+      harmonized_list
     )
     download_dir <- fs::path("./")
     if (is_harmonized) {
@@ -116,16 +136,14 @@ process DOWNLOAD_GWAS_CATALOG_DATA {
         study_accession = gwas_cat_id, 
         harmonised_list = harmonized_list,
         directory_list = directory_list, 
-        list_all_files = FALSE, 
-        lftp_settings = gwascat_settings
+        list_all_files = FALSE
       )
       
     } else {
       
       file_links <- gwascatftp::get_accession_file_links(
       study_accession = gwas_cat_id, 
-      directory_list = directory_list, 
-      lftp_settings = gwascat_settings
+      directory_list = directory_list
     )
       # Only keep the .tsv or .tsv.gz
       file_link <- lapply(file_links, function(x){
@@ -141,8 +159,7 @@ process DOWNLOAD_GWAS_CATALOG_DATA {
         accession_file_links = file_link,
         download_directory = download_dir,
         create_accession_directory = FALSE,
-        overwrite_existing_files = TRUE, 
-        lftp_settings = gwascat_settings
+        overwrite_existing_files = TRUE
       )
 
     downloaded_file_name <- fs::path_file(unlist(file_link))
@@ -169,18 +186,20 @@ process DOWNLOAD_OPEN_GWAS_DATA {
         pattern: "raw_sumstat_file.*"
 
     input:
-    tuple val(phenotype_name), val(id)
+    tuple val(phenotype_name), val(id), val(use_proxy), val(ftp_proxy)
 
     output:
     tuple val(phenotype_name), path('raw_sumstat_file.vcf.gz')
 
     script: 
     """
-    # TODO make this not depend on Charite proxies
-    export http_proxy="http://proxy.charite.de:8080"
-    export https_proxy=\$http_proxy
-    export HTTPS_PROXY=\$http_proxy
-    export HTTP_PROXY=\$http_proxy
+    if [ "$use_proxy" = "true" ]; then
+        export http_proxy="$ftp_proxy"
+        export https_proxy=\$http_proxy
+        export HTTPS_PROXY=\$http_proxy
+        export HTTP_PROXY=\$http_proxy
+    fi
+    
     wget https://gwas.mrcieu.ac.uk/files/${id}/${id}.vcf.gz \
         --output-document raw_sumstat_file.vcf.gz
     """

@@ -11,8 +11,9 @@ them into both the GRCh37 and GRCh38 genome build.
 
 The pipeline covers the following steps:
 
-1. Work with local files or download summary statistics from openGWAS, GWAS
-   Catalog or an arbitrary link
+1. Work with local files or download summary statistics from openGWAS
+   (*currently not supported due to upstream changes!*), GWAS Catalog or an
+   arbitrary link
 
 ### Input Table
 
@@ -92,9 +93,9 @@ the path to the input table in the `input_table` parameter.
 ```
 library(data.table)
 input_table <- data.table(
-    phenotype_id = c("atrial_fibrillation", "body_mass_index"),
-    data_source = c("gwas_catalog", "open_gwas"),
-    data_id = c("GCST90204201", "ieu-b-5118"),
+    phenotype_id = c("atrial_fibrillation"),
+    data_source = c("gwas_catalog"),
+    data_id = c("GCST90204201"),
     data_link = NA_character_,
     data_location = NA_character_
 )
@@ -137,3 +138,9 @@ output/
     │   └── raw_sumstat_file.vcf.gz
 [...]
 ```
+
+
+# TODO
+
+* Update mechanism to download OpenGWAS data (need JWT Token now, see [here](https://mrcieu.github.io/ieugwasr/articles/guide.html)
+* Use conda environment for lftp
